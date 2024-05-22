@@ -29,7 +29,7 @@ Modificar la version del compilador:
     }
 ```
 
-
+dentro de dependencies:
 ```
     val room_version = "2.6.1"
 

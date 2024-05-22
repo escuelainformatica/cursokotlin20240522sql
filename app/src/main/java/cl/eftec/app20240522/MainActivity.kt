@@ -10,12 +10,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.room.Room
 import cl.eftec.app20240522.dao.AppDatabase
 import cl.eftec.app20240522.entidad.User
+import cl.eftec.app20240522.entidad.UserMutable
 import cl.eftec.app20240522.ui.theme.App20240522Theme
 
 class MainActivity : ComponentActivity() {
@@ -24,9 +27,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             App20240522Theme {
+                var usuarioeditable= remember {
+                    UserMutable()
+                }
                 val db = Room.databaseBuilder(
                     applicationContext,
-                    AppDatabase::class.java, "database-name"
+                    AppDatabase::class.java, "database-name3"
                 ).allowMainThreadQueries()
                     .build() // allowMainThreadQueries corra sincronicamente
                 
@@ -41,15 +47,17 @@ class MainActivity : ComponentActivity() {
                         for(us in usuarios) {
                             Text(text = "${us.firstName} ${us.lastName}")
                         }
-                        
+                        TextField(value = usuarioeditable.firstName.value!!, onValueChange = {
+                            usuarioeditable.firstName.value=it
+                    })
+                        TextField(value = usuarioeditable.lastName.value!!, onValueChange = {
+                            usuarioeditable.lastName.value=it
+                        })
                         Button(onClick = {
-
-
-                            var us = User(2, "anna", "smith");
-                            db.userDao().insertAll(us)
+                            db.userDao().insertAll(usuarioeditable.obtenerUser())
 
                         }) {
-
+                            Text("agregar")
 
                         }
                     }
